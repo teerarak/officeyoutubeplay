@@ -61,7 +61,7 @@ export class AppComponent {
       this.itemsRef.push({
         title: data.items[0].snippet.title,
         content: youtubeId,
-        image: data.items[0].snippet.thumbnails.medium.url
+        image: data.items[0].snippet.thumbnails.standard.url
       });
     }, error => console.log('no video on youtube'));
     this.itemValue = '';

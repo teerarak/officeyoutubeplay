@@ -75,7 +75,7 @@ export class AppComponent {
   }
 
   onStateChange(event) {
-    if (event.data === 0 || event.data === -1) {
+    if (event.data === 0) {
       this.playVideo();
     }
   }

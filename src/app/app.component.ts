@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 import { AngularFireDatabase, AngularFireList } from 'angularfire2/database';
 import { Observable, Subject } from 'rxjs';
-import { HttpClient,HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { map, switchMap } from 'rxjs/operators';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-root',
@@ -23,10 +24,15 @@ export class AppComponent {
   favoriteMusicPlaylistRef: AngularFireList<any>;
 
   videoList: any;
+  itemForm: FormGroup;
   favoriteMusicListByPlaylist: any;
   favoritePlaylistNameList: any;
 
-  constructor(public db: AngularFireDatabase,private http: HttpClient) {
+  constructor(
+    public db: AngularFireDatabase,
+    private http: HttpClient,
+    private formBuilder: FormBuilder
+  ) {
     this.items = db.list('items').valueChanges();
     this.itemsRef = db.list('items');
 
@@ -38,13 +44,17 @@ export class AppComponent {
 
     // Use snapshotChanges().map() to store the key
     this.items = this.itemsRef.snapshotChanges()
-    .pipe(map(changes =>changes.map(c => ({ key: c.payload.key, ...c.payload.val() }))));
+      .pipe(map(changes => changes.map(c => ({ key: c.payload.key, ...c.payload.val() }))));
 
     this.favoritePlaylistName = this.favoritePlaylistNameRef.snapshotChanges()
-    .pipe(map(changes =>changes.map(c => ({ key: c.payload.key, ...c.payload.val() }))));
+      .pipe(map(changes => changes.map(c => ({ key: c.payload.key, ...c.payload.val() }))));
 
     this.favoriteMusicPlaylist = this.favoriteMusicPlaylistRef.snapshotChanges()
-    .pipe(map(changes =>changes.map(c => ({ key: c.payload.key, ...c.payload.val() }))));
+      .pipe(map(changes => changes.map(c => ({ key: c.payload.key, ...c.payload.val() }))));
+
+    this.itemForm = formBuilder.group({
+      itemUrl: ["", Validators.compose([Validators.required, Validators.nullValidator, Validators.pattern("^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+$")])]
+    });
   }
 
   player: YT.Player;
@@ -80,7 +90,12 @@ export class AppComponent {
 
   // == Normal Playlist == //
   addMusicByInputToPlaylist() {
-    this.addMusicToPlaylist(this.getYoutubeIdFromUrl(this.itemValue));
+    this.itemValue = this.itemForm.get('itemUrl').value;
+    this.itemForm.controls['itemUrl'].markAsTouched();
+
+    if (this.itemForm.controls['itemUrl'].valid) {
+      this.addMusicToPlaylist(this.getYoutubeIdFromUrl(this.itemValue));
+    }
   }
 
   addMusicToPlaylist(youtubeId: string) {
@@ -92,7 +107,8 @@ export class AppComponent {
 
       this.itemsRef.push(music);
     }, error => console.log('no video on youtube'));
-    this.itemValue = '';
+    this.itemForm.controls['itemUrl'].clearValidators();
+    this.itemForm.get('itemUrl').setValue("");
   }
 
   removeList(key: string) {
@@ -106,7 +122,7 @@ export class AppComponent {
 
   // == Favorite Playlist == //
   createFavoritePlaylistName() {
-    if(this.playlist !== '') {
+    if (this.playlist !== '') {
       this.favoritePlaylistNameRef.push({
         playlistName: this.playlist
       });
@@ -133,10 +149,10 @@ export class AppComponent {
     const playlistSubject = new Subject<string>();
     const queryObservable = playlistSubject.pipe(
       switchMap(playlistNameMap => this.db.list('/favoritePlaylist', ref =>
-      ref.orderByChild('playlistName').equalTo(playlistNameMap)).valueChanges()) // Orderbychild = columm name
+        ref.orderByChild('playlistName').equalTo(playlistNameMap)).valueChanges()) // Orderbychild = columm name
     );
     queryObservable.subscribe(queriedItems => {
-        this.favoriteMusicListByPlaylist = queriedItems;
+      this.favoriteMusicListByPlaylist = queriedItems;
     });
     playlistSubject.next(playlistName); // run query here
   }
@@ -156,16 +172,14 @@ export class AppComponent {
   }
 
   // == Youtube Service == //
-  getYoutubeIdFromUrl(youtubeUrl: string): string{
-    if (youtubeUrl != null && youtubeUrl !== undefined && youtubeUrl !== '') {
-      const splitYoutubeUrl = youtubeUrl.split('v=')[1].split('&')[0];
-      return splitYoutubeUrl;
-    }
+  getYoutubeIdFromUrl(youtubeUrl: string): string {
+    const splitYoutubeUrl = youtubeUrl.split('v=')[1].split('&')[0];
+    return splitYoutubeUrl;
   }
 
   getName(youtubeId: string): any {
     const params = new HttpParams().set('id', youtubeId).set('part', 'snippet').set('key', 'AIzaSyAQvPt41Ju_NniJg8GnWXZvS3El4JLCAaQ');
-    return this.http.get('https://www.googleapis.com/youtube/v3/videos', {params});
+    return this.http.get('https://www.googleapis.com/youtube/v3/videos', { params });
   }
 
 }

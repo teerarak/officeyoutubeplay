@@ -1,6 +1,7 @@
 <div class="col-12">
-    <div class="row justify-content-md-center">
-        <h1>Office Radio</h1>
+    <div class="row justify-content-md-center p-3" style="margin-bottom: 16px;
+        background: #f1f1f1;">
+        <h3 class="m-0">Office Radio</h3>
     </div>
     <div class="row">
         <div class="col-6">
@@ -8,29 +9,34 @@
                 <h4>Youtube Player</h4>
             </div>
             <div class="col-12">
-                <youtube-player [height]="600" [width]="800" (ready)="savePlayer($event)" (change)="onStateChange($event)"></youtube-player>
+                <youtube-player (ready)="savePlayer($event)" (change)="onStateChange($event)"></youtube-player>
             </div>
             <div class="col-12">
                 <button type="button" class="btn btn-success" (click)="playVideo()">Play Youtube List</button>
             </div>
         </div>
-        <div class="col-6">
-            <div class="col-12 p-0 mb-2">
+        <div class="col-6 col-lg-4 no-gutters">
+            <div class="col-12 mb-2">
                 <label for="item">Item</label>
-                <input (keydown.enter)="getIdFromUrl()" type="text" class="form-control" placeholder="Enter content..." id="item" required [(ngModel)]="itemValue" name="item">
+                <input (keydown.enter)="getIdFromUrl()" type="text" class="form-control" placeholder="Enter content..."
+                    id="item" required [(ngModel)]="itemValue" name="item">
             </div>
             <div class="col-12">
-                <div class="row" *ngFor="let item of items | async">
-                    <div class="col-12">
-                        <div class="card">
+                <div class="row">
+                    <div class="col-12" style="height: 70vh; overflow-y: scroll;">
+                        <div class="card mb-2" *ngFor="let item of items | async">
                             <div class="card-body">
-                                <h6 class="card-title"><b>{{item.title}}</b></h6>
                                 <div class="row">
-                                    <div class="col-10">
-                                        <img src="{{item.image}}" height="120px" style="height:auto;" class="img-fluid" alt="Responsive image">
+                                    <div class="col-12">
+                                        <h6 class="card-title" style="display: inline; "><b>{{item.title}}</b></h6>
+                                        <a (click)="removeList(item.key)" class="btn btn-sm btn-primary" style="float: right;
+                                        color: white;
+                                        font-weight: bold;
+                                        margin-bottom: 5px;">X</a>
                                     </div>
-                                    <div class="col-2">
-                                        <a (click)="removeList(item.key)" class="btn btn-primary">X</a>
+                                    <div class="col-12">
+                                        <img src="{{item.image}}" height="120px" style="height:auto; width: 100%" class="img-fluid"
+                                            alt="Responsive image">
                                     </div>
                                 </div>
                             </div>

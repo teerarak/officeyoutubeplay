@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { AngularFireDatabase, AngularFireList } from 'angularfire2/database';
 import { Observable, Subject } from 'rxjs';
 import { HttpClient,HttpParams } from '@angular/common/http';
-import { map, switchMap } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators'; 
 
 @Component({
   selector: 'app-root',

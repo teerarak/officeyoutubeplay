@@ -10,9 +10,6 @@ import { map } from 'rxjs/operators';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'JavaSampleApproach';
-  description = 'Angular-Firebase Demo';
-
   itemValue = '';
   items: Observable<any[]>;
   itemsRef: AngularFireList<any>;

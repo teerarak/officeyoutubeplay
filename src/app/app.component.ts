@@ -11,6 +11,7 @@ import { map, switchMap } from 'rxjs/operators';
 })
 export class AppComponent {
   itemValue = '';
+  playlist = '';
 
   items: Observable<any[]>;
   itemsRef: AngularFireList<any>;
@@ -52,6 +53,10 @@ export class AppComponent {
     this.items.subscribe(i => {
       this.videoList = i;
     });
+
+    this.favoritePlaylistName.subscribe(i => {
+      this.favoritePlaylistNameList = i;
+    })
   }
 
   // == youtube video play == //
@@ -95,11 +100,18 @@ export class AppComponent {
   }
 
   shuffleMusicPlaylist() {
-    console.log('shuffle');
+    console.log(this.favoritePlaylistNameList);
   }
 
 
   // == Favorite Playlist == //
+  createFavoritePlaylistName() {
+    this.favoritePlaylistNameRef.push({
+      playlistName: this.playlist
+    });
+    console.log(this.favoritePlaylistNameList);
+  }
+
   addMusicToFavoritePlayList(playlistName: string, youtubeId: string) {
     this.getName(youtubeId).subscribe(data => {
 

@@ -49,13 +49,15 @@
         <div class="col-2">
             <div class="card" style="width: 18rem;">
                 <div class="card-header">
-                    Add Favorite Playlist
+                    Favorite Playlist
                 </div>
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item">Cras justo odio</li>
-                    <li class="list-group-item">Dapibus ac facilisis in</li>
-                    <li class="list-group-item">Vestibulum at eros</li>
+                    <li class="list-group-item itemFavoriteName" *ngFor="let item of favoritePlaylistNameList">{{item.playlistName}}</li>
                 </ul>
+            </div>
+            <div class="p-2 card mt-2">
+                <h6 class="text-center">Create Favorite Playlist</h6>
+                <input (keydown.enter)="createFavoritePlaylistName()" type="text" class="form-control" placeholder="Enter content..." id="item" required [(ngModel)]="playlist" name="item">
             </div>
         </div>
     </div>

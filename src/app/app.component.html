@@ -11,15 +11,14 @@
             <div class="col-12">
                 <youtube-player (ready)="savePlayer($event)" (change)="onStateChange($event)"></youtube-player>
             </div>
-            <div class="col-12">
-                <button type="button" class="btn btn-success" (click)="playVideo()">Play Youtube List</button>
+            <div class="col-12 text-center">
+                <button type="button" class="btn btn-light" (click)="playVideo()">Play next music</button>
             </div>
         </div>
-        <div class="col-6 col-lg-4 no-gutters">
+        <div class="col-4 no-gutters">
             <div class="col-12 mb-2">
-                <label for="item">Item</label>
-                <input (keydown.enter)="getIdFromUrl()" type="text" class="form-control" placeholder="Enter content..."
-                    id="item" required [(ngModel)]="itemValue" name="item">
+                <label for="item">Add music to playlist</label>
+                <input (keydown.enter)="addMusicToPlaylist()" type="text" class="form-control" placeholder="Enter content..." id="item" required [(ngModel)]="itemValue" name="item">
             </div>
             <div class="col-12">
                 <div class="row">
@@ -35,14 +34,28 @@
                                         margin-bottom: 5px;">X</a>
                                     </div>
                                     <div class="col-12">
-                                        <img src="{{item.image}}" height="120px" style="height:auto; width: 100%" class="img-fluid"
-                                            alt="Responsive image">
+                                        <img src="{{item.image}}" height="120px" style="height:auto; width: 100%" class="img-fluid" alt="Responsive image">
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <div class="col-12 justify-content-md-center text-center mt-2">
+                        <button type="button" class="btn btn-light" (click)="shuffleMusicPlaylist()">Shuffle Playlist</button>
+                    </div>
                 </div>
+            </div>
+        </div>
+        <div class="col-2">
+            <div class="card" style="width: 18rem;">
+                <div class="card-header">
+                    Add Favorite Playlist
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Cras justo odio</li>
+                    <li class="list-group-item">Dapibus ac facilisis in</li>
+                    <li class="list-group-item">Vestibulum at eros</li>
+                </ul>
             </div>
         </div>
     </div>

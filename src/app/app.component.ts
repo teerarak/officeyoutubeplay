@@ -106,9 +106,12 @@ export class AppComponent {
 
   // == Favorite Playlist == //
   createFavoritePlaylistName() {
-    this.favoritePlaylistNameRef.push({
-      playlistName: this.playlist
-    });
+    if(this.playlist !== '') {
+      this.favoritePlaylistNameRef.push({
+        playlistName: this.playlist
+      });
+      this.playlist = '';
+    }
     console.log(this.favoritePlaylistNameList);
   }
 
@@ -140,6 +143,16 @@ export class AppComponent {
 
   removeMusicFromFavoritePlaylist(key: string) {
     this.favoriteMusicPlaylistRef.remove(key);
+  }
+
+  addMusicFromFavoritePlaylistToPlaylist(item: any) {
+    this.itemsRef.push(item);
+  }
+
+  addAllMusicFromFavoritePlaylistToPlaylist() {
+    this.favoriteMusicListByPlaylist.forEach(element => {
+      this.itemsRef.push(element);
+    });
   }
 
   // == Youtube Service == //

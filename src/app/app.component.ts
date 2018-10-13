@@ -116,7 +116,24 @@ export class AppComponent {
   }
 
   shuffleMusicPlaylist() {
-    console.log(this.favoritePlaylistNameList);
+    if(this.videoList.length > 1){
+      let randomVideo: any[] = new Array<any>();
+      const videoLength = this.videoList.length;
+      for(let i = 0; i < videoLength; i++) {
+        const randomNumber = Math.floor(Math.random() * this.videoList.length);
+        randomVideo.push(this.videoList[randomNumber]);
+        this.videoList.splice(randomNumber, 1);
+      }
+      this.itemsRef.remove();
+
+      randomVideo.forEach(element => {
+        const music = new MusicModel();
+        music.content = element.content;
+        music.image = element.image;
+        music.title = element.title;
+        this.itemsRef.push(music);
+      });
+    }
   }
 
 

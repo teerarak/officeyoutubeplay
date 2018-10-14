@@ -140,25 +140,34 @@ export class AppComponent {
     this.itemsRef.remove(key);
   }
 
-  shuffleMusicPlaylist() {
-    if (this.videoList.length > 1) {
-      let randomVideo: any[] = new Array<any>();
-      const videoLength = this.videoList.length;
-      for (let i = 0; i < videoLength; i++) {
-        const randomNumber = Math.floor(Math.random() * this.videoList.length);
-        randomVideo.push(this.videoList[randomNumber]);
-        this.videoList.splice(randomNumber, 1);
-      }
-      this.itemsRef.remove();
-
-      randomVideo.forEach(element => {
-        const music = new MusicModel();
-        music.content = element.content;
-        music.image = element.image;
-        music.title = element.title;
-        this.itemsRef.push(music);
-      });
+  shuffle<T>(array: T[]): T[] {
+    if (!Array.isArray(array)) {
+      throw new TypeError(`Expected an Array, got ${typeof array} instead.`);
     }
+
+    const oldArray = [...array];
+    let newArray = new Array<T>();
+
+    while (oldArray.length) {
+      const i = Math.floor(Math.random() * oldArray.length);
+      newArray = newArray.concat(oldArray.splice(i, 1));
+    }
+
+    return newArray;
+  }
+
+  shuffleMusicPlaylist() {
+    this.itemsRef.remove();
+
+    let randomVideo: any[] = new Array<any>();
+    randomVideo = this.shuffle(this.videoList);
+    randomVideo.forEach(item => {
+      const music = new MusicModel();
+      music.content = item.content;
+      music.image = item.image;
+      music.title = item.title;
+      this.itemsRef.push(music);
+    });
   }
 
   // == Favorite Playlist == //

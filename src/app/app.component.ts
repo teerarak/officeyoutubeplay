@@ -1,14 +1,16 @@
 import { Component } from "@angular/core";
 import { AngularFireDatabase, AngularFireList } from "angularfire2/database";
 import { Observable, Subject } from "rxjs";
-import { HttpClient, HttpParams } from "@angular/common/http";
 import { map, switchMap } from "rxjs/operators";
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
+import { YoutubeService } from "./service/youtube.service";
+import { OtherService } from "./service/other.service";
 
 @Component({
   selector: "app-root",
   templateUrl: "./app.component.html",
-  styleUrls: ["./app.component.css"]
+  styleUrls: ["./app.component.css"],
+  providers: [YoutubeService,OtherService]
 })
 export class AppComponent {
   itemValue = "";
@@ -30,7 +32,8 @@ export class AppComponent {
 
   constructor(
     public db: AngularFireDatabase,
-    private http: HttpClient,
+    private youtubeService: YoutubeService,
+    private otherService: OtherService,
     private formBuilder: FormBuilder
   ) {
     this.items = db.list("items").valueChanges();
@@ -67,7 +70,7 @@ export class AppComponent {
         )
       );
 
-    this.itemForm = formBuilder.group({
+    this.itemForm = this.formBuilder.group({
       itemUrl: [
         "",
         Validators.compose([
@@ -116,12 +119,12 @@ export class AppComponent {
     this.itemForm.controls["itemUrl"].markAsTouched();
 
     if (this.itemForm.controls["itemUrl"].valid) {
-      this.addMusicToPlaylist(this.getYoutubeIdFromUrl(this.itemValue));
+      this.addMusicToPlaylist(this.youtubeService.getYoutubeIdFromUrl(this.itemValue));
     }
   }
 
   addMusicToPlaylist(youtubeId: string) {
-    this.getName(youtubeId).subscribe(
+    this.youtubeService.getName(youtubeId).subscribe(
       data => {
         const music = new MusicModel();
         music.title = data.items[0].snippet.title;
@@ -142,27 +145,11 @@ export class AppComponent {
     this.itemsRef.remove(key);
   }
 
-  shuffle<T>(array: T[]): T[] {
-    if (!Array.isArray(array)) {
-      throw new TypeError(`Expected an Array, got ${typeof array} instead.`);
-    }
-
-    const oldArray = [...array];
-    let newArray = new Array<T>();
-
-    while (oldArray.length) {
-      const i = Math.floor(Math.random() * oldArray.length);
-      newArray = newArray.concat(oldArray.splice(i, 1));
-    }
-
-    return newArray;
-  }
-
   shuffleMusicPlaylist() {
     this.itemsRef.remove();
 
     let randomVideo: any[] = new Array<any>();
-    randomVideo = this.shuffle(this.videoList);
+    randomVideo = this.otherService.shuffle(this.videoList);
     randomVideo.forEach(item => {
       const music = new MusicModel();
       music.content = item.content;
@@ -184,7 +171,7 @@ export class AppComponent {
   }
 
   addMusicToFavoritePlayList(playlistName: string, youtubeId: string) {
-    this.getName(youtubeId).subscribe(
+    this.youtubeService.getName(youtubeId).subscribe(
       data => {
         const musicWithPlaylist = new MusicModel();
         musicWithPlaylist.playlistName = playlistName;
@@ -230,21 +217,6 @@ export class AppComponent {
     });
   }
 
-  // == Youtube Service == //
-  getYoutubeIdFromUrl(youtubeUrl: string): string {
-    const splitYoutubeUrl = youtubeUrl.split("v=")[1].split("&")[0];
-    return splitYoutubeUrl;
-  }
-
-  getName(youtubeId: string): any {
-    const params = new HttpParams()
-      .set("id", youtubeId)
-      .set("part", "snippet")
-      .set("key", "AIzaSyAQvPt41Ju_NniJg8GnWXZvS3El4JLCAaQ");
-    return this.http.get("https://www.googleapis.com/youtube/v3/videos", {
-      params
-    });
-  }
 }
 
 export class MusicModel {

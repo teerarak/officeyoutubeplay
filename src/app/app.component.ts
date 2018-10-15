@@ -126,8 +126,10 @@ export class AppComponent {
         const music = new MusicModel();
         music.title = data.items[0].snippet.title;
         music.content = youtubeId;
-        music.image = data.items[0].snippet.thumbnails.standard.url;
-
+        music.image = data.items[0].snippet.thumbnails.default.url;
+        if (data.items[0].snippet.thumbnails.standard !== undefined){
+          music.image = data.items[0].snippet.thumbnails.standard.url;
+        }
         this.itemsRef.push(music);
       },
       error => console.log("no video on youtube")

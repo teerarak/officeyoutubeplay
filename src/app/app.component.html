@@ -4,7 +4,7 @@
         <h3 class="m-0">Office Radio</h3>
     </div>
     <div class="row">
-        <div class="col-6">
+        <div class="col-12 col-md-6 row no-gutters mb-3">
             <div class="col-12">
                 <h4>Youtube Player</h4>
             </div>
@@ -15,50 +15,57 @@
                 <button type="button" class="btn btn-light" (click)="playVideo()">Play next music</button>
             </div>
         </div>
-        <div class="col-4 no-gutters">
-            <div class="col-12 mb-2">
-                <label for="item">Add music to playlist</label>
-                <input (keydown.enter)="addMusicByInputToPlaylist()" type="text" class="form-control" placeholder="Enter content..." id="item" required [(ngModel)]="itemValue" name="item">
-            </div>
-            <div class="col-12">
-                <div class="row">
-                    <div class="col-12" style="height: 70vh; overflow-y: scroll;">
-                        <div class="card mb-2" *ngFor="let item of items | async">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-12">
-                                        <h6 class="card-title" style="display: inline; "><b>{{item.title}}</b></h6>
-                                        <a (click)="removeList(item.key)" class="btn btn-sm btn-primary" style="float: right;
+        <div class="col-12 col-md-6 row no-gutters mb-3">
+            <div class="col-12 col-md-6 row no-gutters mb-3" [formGroup]='itemForm'>
+                <div class="col-12 mb-2"><label for="item"> Add music to playlist</label>
+                    <input (keydown.enter)="addMusicByInputToPlaylist()" type="text" class="form-control" placeholder="Enter content..."
+                        id="item" required name="item" formControlName='itemUrl'>
+                    <p class="text-danger" *ngIf="itemForm.controls['itemUrl'].touched && !itemForm.controls['itemUrl'].valid">
+                        invalid URL</p>
+                </div>
+                <div class="col-12">
+                    <div class="row">
+                        <div class="col-12" style="height: 70vh; overflow-y: scroll;">
+                            <div class="card mb-2" *ngFor="let item of items | async">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <h6 class="card-title" style="display: inline; "><b>{{item.title}}</b></h6>
+                                            <a (click)="removeList(item.key)" class="btn btn-sm btn-primary" style="float: right;
                                         color: white;
                                         font-weight: bold;
                                         margin-bottom: 5px;">X</a>
-                                    </div>
-                                    <div class="col-12">
-                                        <img src="{{item.image}}" height="120px" style="height:auto; width: 100%" class="img-fluid" alt="Responsive image">
+                                        </div>
+                                        <div class="col-12">
+                                            <img src="{{item.image}}" height="120px" style="height:auto; width: 100%"
+                                                class="img-fluid" alt="Responsive image">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-12 justify-content-md-center text-center mt-2">
-                        <button type="button" class="btn btn-light" (click)="shuffleMusicPlaylist()">Shuffle Playlist</button>
+                        <div class="col-12 justify-content-md-center text-center mt-2">
+                            <button type="button" class="btn btn-light" (click)="shuffleMusicPlaylist()">Shuffle
+                                Playlist</button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-2">
-            <div class="card" style="width: 18rem;">
-                <div class="card-header">
-                    Favorite Playlist
+            <div class="col-12 col-md-6 px-3">
+                <div class="card">
+                    <div class="card-header">
+                        Favorite Playlist
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item itemFavoriteName" *ngFor="let item of favoritePlaylistNameList">{{item.playlistName}}</li>
+                    </ul>
                 </div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item itemFavoriteName" *ngFor="let item of favoritePlaylistNameList">{{item.playlistName}}</li>
-                </ul>
-            </div>
-            <div class="p-2 card mt-2">
-                <h6 class="text-center">Create Favorite Playlist</h6>
-                <input (keydown.enter)="createFavoritePlaylistName()" type="text" class="form-control" placeholder="Enter content..." id="item" required [(ngModel)]="playlist" name="item">
+                <div class="p-2 card mt-2">
+                    <h6 class="text-center">Create Favorite Playlist</h6>
+                    <input (keydown.enter)="createFavoritePlaylistName()" type="text" class="form-control" placeholder="Enter content..."
+                        id="item" required [(ngModel)]="playlist" name="item">
+                </div>
             </div>
         </div>
+
     </div>
-</div>

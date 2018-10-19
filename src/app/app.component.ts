@@ -162,10 +162,15 @@ export class AppComponent {
   // == Favorite Playlist == //
   createFavoritePlaylistName() {
     if (this.playlist !== "") {
-      this.favoritePlaylistNameRef.push({
-        playlistName: this.playlist
-      });
-      this.playlist = "";
+      this.youtubeService.getName(this.youtubeService.getYoutubeIdFromUrl(this.playlist))
+      .subscribe(
+        async data => {
+          this.favoritePlaylistNameRef.push({
+            playlistName: this.playlist,
+            nameVideo: data.items[0].snippet.title
+          });
+          this.playlist = "";
+        });
     }
     console.log(this.favoritePlaylistNameList);
   }
@@ -197,26 +202,31 @@ export class AppComponent {
           .valueChanges()
       ) // Orderbychild = columm name
     );
-    queryObservable.subscribe(queriedItems => {
+    queryObservable.subscribe (queriedItems => {
       this.favoriteMusicListByPlaylist = queriedItems;
     });
-    playlistSubject.next(playlistName); // run query here
+    playlistSubject.next (playlistName); // run query here
   }
 
-  removeMusicFromFavoritePlaylist(key: string) {
+  removeMusicFromFavoritePlaylist (key: string) {
     this.favoriteMusicPlaylistRef.remove(key);
   }
 
-  addMusicFromFavoritePlaylistToPlaylist(item: any) {
-    this.itemsRef.push(item);
+  addMusicFromFavoritePlaylistToPlaylist (item: any) {
+    this.itemsRef.push (item);
   }
 
-  addAllMusicFromFavoritePlaylistToPlaylist() {
+  addAllMusicFromFavoritePlaylistToPlaylist () {
     this.favoriteMusicListByPlaylist.forEach(element => {
-      this.itemsRef.push(element);
+      this.itemsRef.push (element);
     });
   }
-
+  AddFavoritePlaylistToPlaylist (playlistName) {
+    this.addMusicToPlaylist(this.youtubeService.getYoutubeIdFromUrl (playlistName));
+  }
+  eiei (key) {
+    console.log(key);
+  }
 }
 
 export class MusicModel {

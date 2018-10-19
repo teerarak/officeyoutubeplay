@@ -1,7 +1,7 @@
 <div class="col-12">
     <div class="row justify-content-md-center p-3" style="margin-bottom: 16px;
         background: #f1f1f1;">
-        <h3 class="m-0">Office Radio</h3>
+        <h3 class="m-0">RE Radio</h3>
     </div>
     <div class="row">
         <div class="col-12 col-md-6 row no-gutters mb-3">
@@ -57,7 +57,13 @@
                         Favorite Playlist
                     </div>
                     <ul class="list-group list-group-flush">
-                        <li class="list-group-item itemFavoriteName" *ngFor="let item of favoritePlaylistNameList">{{item.playlistName}}</li>
+                        <li class="list-group-item itemFavoriteName" *ngFor="let item of favoritePlaylistNameList">
+                          <span>{{ item.nameVideo }}</span><br/>
+                          <button type="button" class="btn btn-light" (click)="AddFavoritePlaylistToPlaylist(item.playlistName)">Add to playlist</button>
+                          <a (click)="removeMusicFromFavoritePlaylist(item.key)" class="btn btn-sm btn-primary" style="float: right;
+                          color: white;
+                          font-weight: bold;">X</a>
+                        </li>
                     </ul>
                 </div>
                 <div class="p-2 card mt-2">
